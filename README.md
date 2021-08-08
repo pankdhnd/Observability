@@ -1,6 +1,9 @@
 # Observability
 Observability is a measure of how well internal states of a system can be inferred from knowledge of its external outputs. Observability helps developers and operators (“DevOps”) understand distributed systems: what’s slow, what’s broken, and what needs to be done to improve performance.
 
+# Monitoring
+Monitoring — the process of gathering telemetry data on the operation of an IT environment to gauge performance and troubleshoot issues. Monitoring involves many different steps — data collection, data processing, data analysis — to name just a few.
+
 ### Three pillers of Observability
 1. Logs  
 2. Metrics  
@@ -28,6 +31,9 @@ The component to which short lived servicres push the data
 ### 5. Alert Manager:
 Pushes alerts via different channels like email, slack channel etc
 
+
+Below is the architecture diagram for Prometheus
+![Prometheus Architecture](https://github.com/pankdhnd/Observability/blob/main/images/prometheus.png)
 
 ### Metric
 Prometheus uses human readable text based format for this metrics. Below is the example of text based format which Prometheus uses:
@@ -122,7 +128,7 @@ Spans can (and generally do) contain “References” to other spans, which allo
 The point of traces is to provide a request-centric view. So, while microservices enable teams and services to work independently, distributed tracing provides a central resource that enables all teams to understand issues from the user’s perspective.
 logs in traces.
 
-![Sample screenshot of distributed tracing](https://github.com/pankdhnd/Observability/blob/main/images/logs_in_trace.png)
+![Distributed Tracing](https://github.com/pankdhnd/Observability/blob/main/images/logs_in_trace.png)
 
 [For more information, follow this link](https://lightstep.com/distributed-tracing/)
 

@@ -104,7 +104,7 @@ To select all HTTP status codes except 4xx ones, you could run:
 http_requests_total{status!~"4.."}
 ```
 
-### Distributed Tracing
+# Distributed Tracing
 Distributed tracing allows you to see the “flow" of one request as it moves through various services in the distributed system. Distributed tracing helps pinpoint where failures occur and what causes poor performance.   
 
 In distributed tracing, a single trace contains a series of tagged time intervals called spans. A span can be thought of as a single unit of work. Spans have a start and end time, and optionally may include other metadata like logs or tags that can help classify “what happened.” Spans have relationships between one another, including parent-child relationships, which are used to show the specific path a particular transaction takes through the numerous services or components that make up the application.   
@@ -118,8 +118,7 @@ logs in traces.
 
 ![Sample screenshot of distributed tracing](https://github.com/pankdhnd/Observability/blob/main/images/logs_in_trace.png)
 
-
-Once upon a time, web apps were frequently served from only one monolithic instance of a service. Over time, the complexity of the web applications that we deploy grew and understanding which component of a system was having issues became more difficult. For instance, imagine we have three services (A, B, and C) deployed and the end user communicates only with Service A. Service A calls out to Service B which in turn calls Service C to yield the end result of a given request. Understanding what’s happening in the system can become quite complicated because any slow down or error in Service C will affect Service B and Service A in turn. Distributed tracing helps you to visualize these relationships more effectively using a “waterfall” style visualization that shows you which steps happened in sequence and which steps are taking the most time. Calls to upstream services are nested as spans within other spans such as the root span that initiated the distributed call graph. Everything in a given trace is tied together using a unique trace ID that is propagated across the network alongside service calls. Each span contains a set of associated metadata that describes what happened — hence, in addition to being able to visualize the latency of each step, you can also examine if errors were returned, which users were associated with the call, and in some cases, the IDs of other traces associated with the one under examination.
+[For more information, follow this link](https://lightstep.com/distributed-tracing/)
 
 Distrubuted tracing require instrumentation of the application/code. Instrumentation:   
 * Assigns each external request a unique external request id

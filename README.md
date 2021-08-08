@@ -12,7 +12,7 @@ Observability is a measure of how well internal states of a system can be inferr
 #### SLI: Service Level Indicators. It is the actual/real numbers on your performance. These are measurable data such as latency, uptime, and error rate.
 
 # Prometheus
-A monitoring tool which allows monitoring of complex infrastructure. Constantly monitors all the services and alerts when there is crash. It also alerts about the problems before they actually occur, allowing system administrtors to prevent the issue.   
+A monitoring tool which allows monitoring of complex infrastructure. Ir is a time series database for metrics monitoring. It Constantly monitors all the services and alerts when there is crash. It also alerts about the problems before they actually occur, allowing system administrtors to prevent the issue.   
 
 In a complex infrastructure where multiple systems are running, and are interdependnet. So if one service goes down, others are impacted as well. In such cases, finding the issue quickly is difficult and time consuming.
 
@@ -31,14 +31,22 @@ Pushes alerts via different channels like email, slack channel etc
 
 ### Metric
 Prometheus uses human readable text based format for this metrics. It has a part called help, which decsribes what the metrics is, and other part is type, which is one of the below 4 types:
+
 #### Counter:   
-Shows incremental counted things, like number of requests, or how many times x happened. The value of counter can only increase or be reset to zero on restart.   
+Shows incremental counted things, like number of requests, or how many times x happened. The value of counter can only increase or be reset to zero on restart.  
+
 #### Gauge:   
-Metric that can go up and down is called as Gauge. For example CPU usage (what is the current value of CPU usage now), Memory usage, Disk usage, number of coucurrent requests etc. A gauge is a metric that represents a single numerical value that can arbitrarily go up and down.   
+Metric that can go up and down is called as Gauge. For example CPU usage (what is the current value of CPU usage now), Memory usage, Disk usage, number of coucurrent requests etc. A gauge is a metric that represents a single numerical value that can arbitrarily go up and down. 
+
 ### Histogram:   
 To measure how long and how big. For example the requests, how long did it take and how big it was. A histogram samples observations (usually things like request durations or response sizes) and counts them in configurable buckets. It also provides a sum of all observed values. Histogram should be used when we know the range of values.
+
 ### Summary:
-Similar to a histogram, a summary samples observations (usually things like request durations and response sizes). While it also provides a total count of observations and a sum of all observed values, it calculates configurable quantiles over a sliding time window. Summary should be used when we do not know the range of values up front.
+Similar to a histogram, a summary samples observations (usually things like request durations and response sizes). While it also provides a total count of observations and a sum of all observed values, it calculates configurable quantiles over a sliding time window. Summary should be used when we do not know the range of values up front.   
+
+
+In Prometheus, you can give each metric labels, which group metrics into segments of interest. For instance, a metric tracking HTTP request counts can be split according to status code, allowing us to know the number of HTTP 5XX errors.
+
 
 ### How Prometheus Works
 Prometheus pulls metric data from targets. For that purpose, the targets must expose /metrics endpoint which Prometheus can refer. Targets must expose the data on /metrics endpiont in a format understandable to prometheus. Many services by default expose the metric data on /metrics end point. But there are many services who do not have native prometheus endpoints. In such cases we have to use exporters. Exporter is a script or service that fetches the metric data from the target and converts it into the Prometheus understands. It also exposes the converted data on its own /metrics endpoint. Prometheus already has a list of exporter for a lot many number of services. Exporters are also availabe as docker images, so thta you can deploy them as side container so that it will fetch the data from main container and expose it on the /metrics endoint for Prometheus to scrape.   
@@ -50,7 +58,8 @@ Prometheus uses pull mechanism to fetch the data from endpoint. This is better t
 Some services are short lived, for example Kubernetes jobs. So Prometheus pull maybe missed and data might not be scraped on regular interval or might not be scraped at all. For such cases, Prometheus provides a push mechanism called `Pushgateway`.
 
 #### What to scrape and when
-It is defined in `Prometheus.yaml` file. You have to specify the targets and scrape interval in the yaml file. Prometheus then uses a service discovery mechanism to find the target endpoints. 
+It is defined in `Prometheus.yaml` file. You have to specify the targets and scrape interval in the yaml file. Prometheus then uses a service discovery mechanism to find the target endpoints.   
+
 
 ### Rules
 We can define rules in Prometheus to aggregate metric values or to create alerts when condition is met (create an alert when CPU reaches 60%).
@@ -77,6 +86,7 @@ scrape_configs:
     static_configs:
       - targets: ['localhost:9090']
 ```
+
 
 ### PromQL
 A query language used by Prometheus to query the data. One sample PromQL statement is given below:

@@ -109,9 +109,15 @@ Distributed tracing allows you to see the “flow" of one request as it moves th
 
 In distributed tracing, a single trace contains a series of tagged time intervals called spans. A span can be thought of as a single unit of work. Spans have a start and end time, and optionally may include other metadata like logs or tags that can help classify “what happened.” Spans have relationships between one another, including parent-child relationships, which are used to show the specific path a particular transaction takes through the numerous services or components that make up the application.   
 
-* Trace represents an end-to-end request; made up of single or multiple spans
-* Span represents work done by a single-service with time intervals and associated metadata; the building blocks of a trace
-* Tags metadata to help contextualize a span
+* **Trace** represents an end-to-end request; made up of single or multiple spans
+* **Span** represents work done by a single-service with time intervals and associated metadata; the building blocks of a trace. It represents an individual unit of work done in a distributed system. Each component of the distributed system contributes a span - a named, timed operation representing a piece of the workflow.
+Spans can (and generally do) contain “References” to other spans, which allows multiple Spans to be assembled into one complete Trace - a visualization of the life of a request as it moves through a distributed system.   
+  * A start timestamp and finish timestamp
+  * A set of key:value span Tags
+  * A set of key:value span Logs
+  * A SpanContext   
+  
+* **Tags metadata** to help contextualize a span
 
 The point of traces is to provide a request-centric view. So, while microservices enable teams and services to work independently, distributed tracing provides a central resource that enables all teams to understand issues from the user’s perspective.
 logs in traces.
@@ -119,6 +125,8 @@ logs in traces.
 ![Sample screenshot of distributed tracing](https://github.com/pankdhnd/Observability/blob/main/images/logs_in_trace.png)
 
 [For more information, follow this link](https://lightstep.com/distributed-tracing/)
+
+It’s critical that spans and traces are tagged in a way that identifies these resources: every span should have tags that indicate the infrastructure it’s running on (datacenter, network, availability zone, host or instance, container) and any other resources it depends on (databases, shared disks). For spans representing remote procedure calls, tags describing the infrastructure of your service’s peers (for example, the remote host) are also critical.
 
 Distrubuted tracing require instrumentation of the application/code. Instrumentation:   
 * Assigns each external request a unique external request id
@@ -138,6 +146,8 @@ Logstash is a light-weight, open-source, server-side data processing pipeline th
 ### Kibana
 Kibana is a data visualization and exploration tool used for log and time-series analytics, application monitoring, and operational intelligence use cases. Kibana is an free and open frontend application that sits on top of the Elastic Stack, providing search and data visualization capabilities for data indexed in Elasticsearch. It is also known as the Charting tool for Elastic stack
 
-
 ### Jeager
 Jaeger is open source software for tracing transactions between distributed services. Distributed tracing allows you to see the “flow" of one request as it moves through various services in the system.
+
+### OpenTelemetry
+An observability framework for cloud-native software. OpenTelemetry is a collection of tools, APIs, and SDKs. You can use it to instrument, generate, collect, and export telemetry data (metrics, logs, and traces) for analysis in order to understand your software's performance and behavior.

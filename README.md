@@ -30,7 +30,16 @@ Pushes alerts via different channels like email, slack channel etc
 
 
 ### Metric
-Prometheus uses human readable text based format for this metrics. It has a part called help, which decsribes what the metrics is, and other part is type, which is one of the below 4 types:
+Prometheus uses human readable text based format for this metrics. Below is the example of text based format which Prometheus uses:
+
+```yaml
+# HELP http_requests_total The total number of HTTP requests.
+# TYPE http_requests_total counter
+http_requests_total{method="post",code="200"} 1027 1395066363000
+http_requests_total{method="post",code="400"} 3 1395066363000
+```
+
+It has a part called help, which decsribes what the metrics is, and other part is type, which is one of the below 4 types:
 
 #### Counter:   
 Shows incremental counted things, like number of requests, or how many times x happened. The value of counter can only increase or be reset to zero on restart.  
@@ -49,7 +58,7 @@ In Prometheus, you can give each metric labels, which group metrics into segment
 
 
 ### How Prometheus Works
-Prometheus pulls metric data from targets. For that purpose, the targets must expose /metrics endpoint which Prometheus can refer. Targets must expose the data on /metrics endpiont in a format understandable to prometheus. Many services by default expose the metric data on /metrics end point. But there are many services who do not have native prometheus endpoints. In such cases we have to use exporters. Exporter is a script or service that fetches the metric data from the target and converts it into the Prometheus understands. It also exposes the converted data on its own /metrics endpoint. Prometheus already has a list of exporter for a lot many number of services. Exporters are also availabe as docker images, so thta you can deploy them as side container so that it will fetch the data from main container and expose it on the /metrics endoint for Prometheus to scrape.   
+Prometheus pulls metric data from targets. For that purpose, the targets must expose /metrics endpoint which Prometheus can refer. Targets must expose the data on /metrics endpiont in a format understandable to prometheus. Many services by default expose the metric data on /metrics end point. But there are many services who do not have native prometheus endpoints. In such cases we have to use exporters. Exporter is a script or service that fetches the metric data from the target and converts it into the Prometheus understands. It also exposes the converted data on its own /metrics endpoint. Prometheus already has a list of exporter for a lot many number of services. Exporters are also availabe as docker images, so that you can deploy them as side container so that it will fetch the data from main container and expose it on the /metrics endoint for Prometheus to scrape.   
 
 In case you wish to expose your own application for lets say view the data for number of requests, exceptions, CPU and memory usage, then you will have to use Prometheus client libraries to expose this data on /metrics endpoint.   
 
@@ -94,3 +103,14 @@ To select all HTTP status codes except 4xx ones, you could run:
 ```typescript
 http_requests_total{status!~"4.."}
 ```
+
+
+# ELK/EFK
+### Elastisearch
+A text search engine that stores and makes available string data for searching. It is commonly used for log analytics, full-text search, security intelligence, business analytics, and operational intelligence use cases.
+
+### Logstash
+Logstash is a light-weight, open-source, server-side data processing pipeline that allows you to collect data from a variety of sources, transform it on the fly, and send it to your desired destination.
+
+### Kibana
+Kibana is a data visualization and exploration tool used for log and time-series analytics, application monitoring, and operational intelligence use cases. Kibana is an free and open frontend application that sits on top of the Elastic Stack, providing search and data visualization capabilities for data indexed in Elasticsearch. It is also known as the Charting tool for Elastic stack

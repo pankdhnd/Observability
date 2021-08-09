@@ -1,7 +1,7 @@
 # Terminologies
 
 ## Observability
-Observability is a measure of how well internal states of a system can be inferred from knowledge of its external outputs. Observability helps developers and operators (“DevOps”) understand distributed systems: what’s slow, what’s broken, and what needs to be done to improve performance.
+Observability is a measure of how well internal states of a system can be inferred from knowledge of its external outputs. Observability helps developers and operators (“DevOps”) understand distributed systems: what’s slow, what’s broken, and what needs to be done to improve performance. Observabiility helps you understand the internals of your production system by asking questions from outside.
 
 ## Monitoring
 Monitoring — the process of gathering telemetry data on the operation of an IT environment to gauge performance and troubleshoot issues. Monitoring involves many different steps — data collection, data processing, data analysis — to name just a few.   

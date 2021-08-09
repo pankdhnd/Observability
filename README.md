@@ -1,13 +1,26 @@
-# Observability
+# Terminologies
+
+## Observability
 Observability is a measure of how well internal states of a system can be inferred from knowledge of its external outputs. Observability helps developers and operators (“DevOps”) understand distributed systems: what’s slow, what’s broken, and what needs to be done to improve performance.
 
-# Monitoring
-Monitoring — the process of gathering telemetry data on the operation of an IT environment to gauge performance and troubleshoot issues. Monitoring involves many different steps — data collection, data processing, data analysis — to name just a few.
+## Monitoring
+Monitoring — the process of gathering telemetry data on the operation of an IT environment to gauge performance and troubleshoot issues. Monitoring involves many different steps — data collection, data processing, data analysis — to name just a few.   
+`Definition from Google: Collecting, processing, aggregating, and displaying real-time quantitative data about a system, such as query counts and types, error counts and types, processing times, and server lifetimes.`
+
+## White-box monitoring
+White box monitoring is where you know the internals of the system. And the system has instrumentation in place to emit telemetry—metrics, logs, traces.
+
+## Black-box monitoring
+Black box monitoring is where you don’t have control and don’t know what’s happening inside the system. You only monitor the system from the outside—its behavior.
 
 ### Three pillers of Observability
 1. Logs  
 2. Metrics  
 3. Traces  
+
+### SRE
+SRE (site reliability engineering) is a discipline used by software engineering and IT teams to proactively build and maintain more reliable services. SRE is a functional way to apply software development solutions to IT operations problems. 
+
 
 ### SLA, SLO, SLI
 #### SLA: Service Level Agreement. It is the agreement that you make with your clients or users.
@@ -30,20 +43,7 @@ Accepts queries for that stored data and shows data in dashboards either thru pr
 The component to which short lived servicres push the data
 ### 5. Alert Manager:
 Pushes alerts via different channels like email, slack channel etc
-
-
-Below is the architecture diagram for Prometheus
-![Prometheus Architecture](https://github.com/pankdhnd/Observability/blob/main/images/prometheus.png)
-
-### Metric
-Prometheus uses human readable text based format for this metrics. Below is the example of text based format which Prometheus uses:
-
-```yaml
-# HELP http_requests_total The total number of HTTP requests.
-# TYPE http_requests_total counter
-http_requests_total{method="post",code="200"} 1027 1395066363000
-http_requests_total{method="post",code="400"} 3 1395066363000
-```
+    Collecting, processing, aggregating, and displaying real-time quantitative data about a system, such as query counts and types, error counts and types, processing times, and server lifetimes.
 
 It has a part called help, which decsribes what the metrics is, and other part is type, which is one of the below 4 types:
 
@@ -71,6 +71,8 @@ In case you wish to expose your own application for lets say view the data for n
 Prometheus uses pull mechanism to fetch the data from endpoint. This is better than push mechanism where applications and servers keep pushing data to centralized systesm just like AWS CloudWatch. In push mechanism case, as services contineously keep pushing the data to the monitoring system, it generates a large number of traffic in the network, which is a disadvantage. Also demaons have to be installed on these servers to push the data, whereas Prometheus just uses a /metrics endpoint. The advantage of using the endpoint is that multiple Prometheus instances can pull the data from a single system. By using pull mechanish, Prometheus can easily detect whether the service is up and running.
 
 Some services are short lived, for example Kubernetes jobs. So Prometheus pull maybe missed and data might not be scraped on regular interval or might not be scraped at all. For such cases, Prometheus provides a push mechanism called `Pushgateway`.
+
+What makes Prometheus unique among other monitoring tools is a multi-dimensional data model in which metrics are identified with a name and an unordered set of key-value pairs called labels. The native querying language, PromQL, can be used to not only aggregate across these labels and then later visualize the data but also to define alerts.
 
 #### What to scrape and when
 It is defined in `Prometheus.yaml` file. You have to specify the targets and scrape interval in the yaml file. Prometheus then uses a service discovery mechanism to find the target endpoints.   
@@ -157,3 +159,32 @@ Jaeger is open source software for tracing transactions between distributed serv
 
 ### OpenTelemetry
 An observability framework for cloud-native software. OpenTelemetry is a collection of tools, APIs, and SDKs. You can use it to instrument, generate, collect, and export telemetry data (metrics, logs, and traces) for analysis in order to understand your software's performance and behavior.
+
+### Fluentd
+Fluentd is a cross platform open-source data collection software project originally developed at Treasure Data. Fluentd can aggregate data from multiple sources, unify the differently formatted data into JSON objects and route it to different output destinations. Design wise — performance, scalability, and reliability are some of Fluentd’s outstanding features. A vanilla Fluentd deployment will run on ~40MB of memory and is capable of processing above 10,000 events per second. Adding new inputs or outputs is relatively simple and has little effect on performance. Fluentd uses disk or memory for buffering and queuing to handle transmission failures or data overload and supports multiple configuration options to ensure a more resilient data pipeline.
+
+### Fluentbit
+Fluent Bit is an open source Log Processor and Forwarder which allows you to collect any data like metrics and logs from different sources, enrich them with filters and send them to multiple destinations. It's the preferred choice for containerized environments like Kubernetes. Fluent Bit was created with a specific use case in mind — highly distributed environments where limited capacity and reduced overhead (memory and CPU) are a huge consideration. To serve this purpose, Fluent Bit was designed for high performance and comes with a super light footprint, running on ~450KB only. An abstracted I/O handler allows asynchronous and event-driven read/write operations. For resiliency and reliability, various configuration option are available for defining retries and the buffer limit.
+
+# The Four GOlden Insights/Golden Signals
+## Latency (Request Service Time)
+Latency is the time it takes a system to respond to a request. Both successful and failed requests have latency and it’s vital to differentiate between the latency of successful and failed requests. For example, an HTTP 500 error, triggered because of a connection loss to the database might be served fast. Although, since HTTP 500 is an error indicating failed request, factoring it into the overall latency will lead to misleading calculations. Alternatively, a slow error can be even worse as it factors in even more latency. Therefore, instead of filtering out errors altogether, keep track of the error latency. Define a target for a good latency rate and monitor the latency of successful requests against failed ones to track the system’s health. 
+
+## Traffic (User Demand)
+Traffic is the measure of how much your service is in demand among users. How this is determined varies depending on the type of business you have. For a web service, traffic measurement is generally HTTP requests per second, while. In a storage system, traffic might be transactions per second or retrievals per second.  For an audio streaming system, this measurement might focus on network I/O rate or concurrent sessions. For a key-value storage system, this measurement might be transactions and retrievals per second.
+
+By monitoring user interaction and traffic in the service, SRE teams can usually figure out the user experience with the service and how it’s affected by shifts in the service's demand. 
+
+## Errors (Rate of Failed Requests)
+Error is the rate of requests that fail in any of the following ways: 
+
+* **Explicitly:** for example, HTTP 500 internal server error.
+* **Implicitly:** for example, HTTP 200 success response coupled with inaccurate content.
+* **By policy** for example, as your response time is set to one second, any request that takes over one second is considered an error.
+
+SRE teams can monitor all errors across the system and at individual service levels to define which errors are critical and which are less severe. By identifying that, they determine the health of their system from the user’s perspective and can take rapid action to fix frequent errors.
+
+## Saturation
+Saturation refers to the overall capacity of the service or how “full” the service is at a given time. It signifies how much memory or CPU resources your system is utilizing. Many systems start underperforming before they reach 100% utilization. Therefore, setting a utilization target is critical as it will help ensure the service performance and availability to the users.
+
+An increase in latency is often a leading indicator of saturation. Measuring your 99th percentile response time over a small time period can provide an early indicator of saturation. For example, a 99th percentile latency of 60 ms indicates that there's a 60 ms delay for every one in 100 requests. 

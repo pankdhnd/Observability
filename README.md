@@ -18,6 +18,12 @@ Black box monitoring is where you don’t have control and don’t know what’s
 2. Metrics  
 3. Traces  
 
+Standard components of a logging stack are:
+*  Logs exporter (configure logs per host)
+*  Log collector listening for log input
+*  Logs storage
+*  Logs visualization
+
 ### SRE
 SRE (site reliability engineering) is a discipline used by software engineering and IT teams to proactively build and maintain more reliable services. SRE is a functional way to apply software development solutions to IT operations problems. 
 

@@ -118,7 +118,7 @@ Distributed tracing allows you to see the “flow" of one request as it moves th
 In distributed tracing, a single trace contains a series of tagged time intervals called spans. A span can be thought of as a single unit of work. Spans have a start and end time, and optionally may include other metadata like logs or tags that can help classify “what happened.” Spans have relationships between one another, including parent-child relationships, which are used to show the specific path a particular transaction takes through the numerous services or components that make up the application.   
 
 * **Trace** represents an end-to-end request; made up of single or multiple spans
-* **Span** represents work done by a single-service with time intervals and associated metadata; the building blocks of a trace. It represents an individual unit of work done in a distributed system. Each component of the distributed system contributes a span - a named, timed operation representing a piece of the workflow.
+* **Span** represents work done by a single-service with time intervals and associated metadata; the building blocks of a trace. It represents an individual unit of work done in a distributed system. Span Id is applicable to the flow of one microservice. If the developer gets this Id, he/she can find the flow of execution in a particular microservice. Each component of the distributed system contributes a span - a named, timed operation representing a piece of the workflow.   
 Spans can (and generally do) contain “References” to other spans, which allows multiple Spans to be assembled into one complete Trace - a visualization of the life of a request as it moves through a distributed system.   
   * A start timestamp and finish timestamp
   * A set of key:value span Tags
@@ -165,6 +165,20 @@ Fluentd is a cross platform open-source data collection software project origina
 
 ### Fluentbit
 Fluent Bit is an open source Log Processor and Forwarder which allows you to collect any data like metrics and logs from different sources, enrich them with filters and send them to multiple destinations. It's the preferred choice for containerized environments like Kubernetes. Fluent Bit was created with a specific use case in mind — highly distributed environments where limited capacity and reduced overhead (memory and CPU) are a huge consideration. To serve this purpose, Fluent Bit was designed for high performance and comes with a super light footprint, running on ~450KB only. An abstracted I/O handler allows asynchronous and event-driven read/write operations. For resiliency and reliability, various configuration option are available for defining retries and the buffer limit.
+
+### Zipkin
+Zipkin is a distributed tracing system. It helps gather timing data needed to troubleshoot latency problems in service architectures. Zipkin is used with Sleuth, which provides instrumentation for spring boot applications. Sleuth provides unique ids for the request flow. Further, the developer uses these ids to find out the flow of execution with the help of tools like Zipkin, ELK etc. Generally it has two ids : Trace id and Span Id. Trace Id is applicable for a complete flow. If the developer gets this Id, he/she can find the flow of execution in all microservices involved. However, Span Id is applicable to the flow of one microservice. If the developer gets this Id, he/she can find the flow of execution in a particular microservice. Moreover, there is a concept of parent id which is applicable to a particular microservice like span id. During the flow of execution, span id of the previous microservice becomes the parent id of the next microservice as shown below.
+
+![Sleuth](https://github.com/pankdhnd/Observability/blob/main/images/sleuth.png)
+
+We use Zipkin in two parts : Zipkin Client and Zipkin Server. Zipkin Client contains Sampler which collects data from microservices with the help of Sleuth and provides it to the Zipkin Server. In order to utilize the benefits of both tools, we should always add Zipkin Client’s dependency along with Sleuth in every microservice. However, there must be only one centralized Zipkin Server, which collects all data from Zipkin Client and display it as a UI. Hence, after making a request developer should look into Zipkin Server to find trace id, span id and even flow of execution. From here itself, Open Log files to check Log lines that are related to the current trace Id.
+
+Zipkin internally it has 4 modules
+* **Collector** – Once any component sends the trace data arrives to Zipkin collector daemon, it is validated, stored, and indexed for lookups by the Zipkin collector.
+* **Storage** – This module store and index the lookup data in backend. Cassandra, ElasticSearch and MySQL are supported.
+* **Search** – This module provides a simple JSON API for finding and retrieving traces stored in backend. The primary consumer of this API is the Web UI.
+* **Web UI** – A very nice UI interface for viewing traces.
+
 
 # The Four GOlden Insights/Golden Signals
 ## Latency (Request Service Time)

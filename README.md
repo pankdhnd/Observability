@@ -11,6 +11,17 @@ Observability allows teams to monitor modern systems more effectively and helps 
 Monitoring — the process of gathering telemetry data on the operation of an IT environment to gauge performance and troubleshoot issues. Monitoring involves many different steps — data collection, data processing, data analysis — to name just a few.   
 `Definition from Google: Collecting, processing, aggregating, and displaying real-time quantitative data about a system, such as query counts and types, error counts and types, processing times, and server lifetimes.`
 
+
+## Monitoring vs Observability
+Monitoring and observability are distinct concepts that depend on each other. Monitoring is an action you perform to increase the observability of your system. Observability is a property of that system, like functionality or testability.
+
+Specifically, monitoring is the act of observing a system’s performance over time. Monitoring tools collect and analyze system data and translate it into actionable insights. Fundamentally, monitoring technologies, such as application performance monitoring (APM), can tell you if a system is up or down or if there is a problem with application performance. Monitoring data aggregation and correlation can also help you to make larger inferences about the system. Load time, for example, can tell developers something about the user experience of a website or an app.
+
+Observability, on the other hand, is a measure of how well the system’s internal states can be inferred from knowledge of its external outputs. It uses the data and insights that monitoring produces to provide a holistic understanding of your system, including its health and performance. The observability of your system, then, depends partly on how well your monitoring metrics can interpret your system's performance indicators.
+
+Another important difference is that monitoring requires you to know what’s important to monitor in advance. Observability lets you determine what’s important by watching how the system performs over time and asking relevant questions about it.
+
+
 ## White-box monitoring
 White box monitoring is where you know the internals of the system. And the system has instrumentation in place to emit telemetry—metrics, logs, traces.
 
@@ -36,6 +47,15 @@ SRE (site reliability engineering) is a discipline used by software engineering 
 #### SLA: Service Level Agreement. It is the agreement that you make with your clients or users.
 #### SLO: Service Level Objective. It is the objective that the team must hit to meet the SLA.  It defines the target for SLIs. For example, p99 latency < 1s; 99.9% uptime; <1% errors. etc.
 #### SLI: Service Level Indicators. It is the actual/real numbers on your performance. These are measurable data such as latency, uptime, and error rate.
+
+
+### Error Budget
+An error budget is the maximum amount of time that a technical system can fail without contractual consequences. 
+
+For example, if your Service Level Agreement (SLA) specifies that systems will function 99.99% of the time before the business has to compensate customers for the outage, that means your error budget (or the time your systems can go down without consequences) is 52 minutes and 35 seconds per year.
+
+If your SLA promises 99.95% uptime, your error budget is four hours, 22 minutes, and 48 seconds. And with an SLA promise of 99.9% uptime, your error budget is eight hours, 46 minutes, and 12 seconds.
+
 
 # Prometheus
 A monitoring tool which allows monitoring of complex infrastructure. Ir is a time series database for metrics monitoring. It Constantly monitors all the services and alerts when there is crash. It also alerts about the problems before they actually occur, allowing system administrtors to prevent the issue.   

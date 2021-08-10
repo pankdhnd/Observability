@@ -44,9 +44,9 @@ SRE (site reliability engineering) is a discipline used by software engineering 
 
 
 ### SLA, SLO, SLI
-#### SLA: Service Level Agreement. It is the agreement that you make with your clients or users.
-#### SLO: Service Level Objective. It is the objective that the team must hit to meet the SLA.  It defines the target for SLIs. For example, p99 latency < 1s; 99.9% uptime; <1% errors. etc.
-#### SLI: Service Level Indicators. It is the actual/real numbers on your performance. These are measurable data such as latency, uptime, and error rate.
+**SLA:** Service Level Agreement. It is the agreement that you make with your clients or users.
+**SLO:** Service Level Objective. It is the objective that the team must hit to meet the SLA.  It defines the target for SLIs. For example, p99 latency < 1s; 99.9% uptime; <1% errors. etc.
+**SLI:** Service Level Indicators. It is the actual/real numbers on your performance. These are measurable data such as latency, uptime, and error rate.
 
 
 ### Error Budget

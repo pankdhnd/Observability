@@ -56,6 +56,16 @@ For example, if your Service Level Agreement (SLA) specifies that systems will f
 
 If your SLA promises 99.95% uptime, your error budget is four hours, 22 minutes, and 48 seconds. And with an SLA promise of 99.9% uptime, your error budget is eight hours, 46 minutes, and 12 seconds.
 
+### Alert Fatigue
+Alarm fatigue or alert fatigue occurs when one is exposed to a large number of frequent alarms (alerts) and consequently becomes desensitized to them. Desensitization can lead to longer response times or missing important alarms. The main problem, according to most, is the sheer number of alerts. A single alert is easy to respond to, even if it interrupts the normal work or free time of an on-call employee. A dozen alerts in succession is harder. And the higher the number climbs, the more likely it is that an employee will miss something important.
+
+### NoOps
+NoOps is the concept that an IT environment can become so automated and abstracted from the underlying infrastructure that there is no need for a dedicated team to manage software in-house.
+
+NoOps expands on an existing DevOps approach by integrating tools, streamlining processes, and implementing automation. Through automation, NoOps dramatically helps reduce the time and effort teams spend on configuration and deployment and removes the need to have a dedicated team managing software. Instead, teams can focus on what’s important and maximize development time.
+
+### Auto-remediation
+Ability to respond to incidnets in automated manner. In a self-healing auto-remediation incident response system, an event triggers automated, well-documented and pre-tested healing procedures. Vulnerabilities are automatically detected, launching secure, auditable, orchestrated infrastructure actions across cloud environments, eliminating the need for you to respond. Even the notifications are automated. No more 3 a.m. troubleshooting!
 
 # Prometheus
 A monitoring tool which allows monitoring of complex infrastructure. It is a time series database for metrics monitoring. It Constantly monitors all the services and alerts when there is crash. It also alerts about the problems before they actually occur, allowing system administrtors to prevent the issue.   

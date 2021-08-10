@@ -29,9 +29,9 @@ White box monitoring is where you know the internals of the system. And the syst
 Black box monitoring is where you don’t have control and don’t know what’s happening inside the system. You only monitor the system from the outside—its behavior.
 
 ### Three pillers of Observability
-1. Logs  
-2. Metrics  
-3. Traces  
+**1. Logs:** A log is a text record of an event that happened at a particular time and includes a timestamp that tells when it occurred and a payload that provides context. Logs come in three formats: plain text, structured and binary. Plain text is the most common, but structured logs — which include additional data and metadata and are easier to query — are becoming increasingly popular. Logs are also typically the first place you look when something goes wrong in a system.  
+**2. Metrics:** A metric is a numeric value measured over an interval of time and includes specific attributes such as timestamp, name, KPIs and value. Unlike logs, metrics are structured by default, which makes it easier to query and optimize for storage, giving you the ability to retain them for longer periods.  
+**3. Traces:** A trace represents the end-to-end journey of a request through a distributed system. As a request moves through the host system, every operation performed on it — called a “span” — is encoded with important data relating to the microservice performing that operation. By viewing traces, each of which includes one or more spans, you can track its course through a distributed system and identify the cause of a bottleneck or breakdown.
 
 Standard components of a logging stack are:
 *  Logs exporter (configure logs per host)
@@ -58,7 +58,7 @@ If your SLA promises 99.95% uptime, your error budget is four hours, 22 minutes,
 
 
 # Prometheus
-A monitoring tool which allows monitoring of complex infrastructure. Ir is a time series database for metrics monitoring. It Constantly monitors all the services and alerts when there is crash. It also alerts about the problems before they actually occur, allowing system administrtors to prevent the issue.   
+A monitoring tool which allows monitoring of complex infrastructure. It is a time series database for metrics monitoring. It Constantly monitors all the services and alerts when there is crash. It also alerts about the problems before they actually occur, allowing system administrtors to prevent the issue.   
 
 In a complex infrastructure where multiple systems are running, and are interdependnet. So if one service goes down, others are impacted as well. In such cases, finding the issue quickly is difficult and time consuming.
 

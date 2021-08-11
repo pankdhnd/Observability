@@ -158,6 +158,15 @@ Distributed tracing allows you to see the “flow" of one request as it moves th
 In distributed tracing, a single trace contains a series of tagged time intervals called spans. A span can be thought of as a single unit of work. Spans have a start and end time, and optionally may include other metadata like logs or tags that can help classify “what happened.” Spans have relationships between one another, including parent-child relationships, which are used to show the specific path a particular transaction takes through the numerous services or components that make up the application.   
 
 * **Trace** represents an end-to-end request; made up of single or multiple spans
+Generally, the lifecycle of a span resembles the following:
+
+* A request is received by a service. The span context is extracted from the request headers, if it exists.
+* A new span is created as a child of the extracted span context; if none exists, a new root span is created.
+* The service handles the request. Additional attributes and events are added to the span that are useful for understanding the context of the request, such as the hostname of the machine handling the request, or customer identifiers.
+* New spans may be created to represent work being done by sub-components of the service.
+* When the service makes a remote call to another service, the current span context is serialized and forwarded to the next service by injecting the span context into the headers or message envelope.
+* The work being done by the service completes, successfully or not. The span status is appropriately set, and the span is marked finished.
+
 * **Span** represents work done by a single-service with time intervals and associated metadata; the building blocks of a trace. It represents an individual unit of work done in a distributed system. Span Id is applicable to the flow of one microservice. If the developer gets this Id, he/she can find the flow of execution in a particular microservice. Each component of the distributed system contributes a span - a named, timed operation representing a piece of the workflow.   
 Spans can (and generally do) contain “References” to other spans, which allows multiple Spans to be assembled into one complete Trace - a visualization of the life of a request as it moves through a distributed system.   
   * A start timestamp and finish timestamp
@@ -198,7 +207,17 @@ Kibana is a data visualization and exploration tool used for log and time-series
 Jaeger is open source software for tracing transactions between distributed services. Distributed tracing allows you to see the “flow" of one request as it moves through various services in the system.
 
 ### OpenTelemetry
-An observability framework for cloud-native software. OpenTelemetry is a collection of tools, APIs, and SDKs. You can use it to instrument, generate, collect, and export telemetry data (metrics, logs, and traces) for analysis in order to understand your software's performance and behavior.
+OpenTelemetry is a set of APIs, SDKs, tooling and integrations that are designed for the creation and management of telemetry data such as traces, metrics, and logs. The project provides a vendor-agnostic implementation that can be configured to send telemetry data to the backend(s) of your choice. It supports a variety of popular open-source projects including Jaeger and Prometheus.
+
+OpenTelemetry provides you with:
+
+* A single, vendor-agnostic instrumentation library per language with support for both automatic and manual instrumentation.
+* A single collector binary that can be deployed in a variety of ways including as an agent or gateway.
+* An end-to-end implementation to generate, emit, collect, process and export telemetry data.
+* Full control of your data with the ability to send data to multiple destinations in parallel through configuration.
+* Open-standard semantic conventions to ensure vendor-agnostic data collection
+* The ability to support multiple context propagation formats in parallel to assist with migrating as standards evolve.
+* A path forward no matter where you are on your observability journey. With support for a variety of open-source and commercial protocols, format and context propagation mechanisms as well as providing shims to the OpenTracing and OpenCensus projects, it is easy to adopt OpenTelemetry.
 
 ### Fluentd
 Fluentd is a cross platform open-source data collection software project originally developed at Treasure Data. Fluentd can aggregate data from multiple sources, unify the differently formatted data into JSON objects and route it to different output destinations. Design wise — performance, scalability, and reliability are some of Fluentd’s outstanding features. A vanilla Fluentd deployment will run on ~40MB of memory and is capable of processing above 10,000 events per second. Adding new inputs or outputs is relatively simple and has little effect on performance. Fluentd uses disk or memory for buffering and queuing to handle transmission failures or data overload and supports multiple configuration options to ensure a more resilient data pipeline.

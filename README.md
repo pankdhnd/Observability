@@ -114,12 +114,134 @@ Some services are short lived, for example Kubernetes jobs. So Prometheus pull m
 
 What makes Prometheus unique among other monitoring tools is a multi-dimensional data model in which metrics are identified with a name and an unordered set of key-value pairs called labels. The native querying language, PromQL, can be used to not only aggregate across these labels and then later visualize the data but also to define alerts.
 
+
+
+
 #### What to scrape and when
 It is defined in `Prometheus.yaml` file. You have to specify the targets and scrape interval in the yaml file. Prometheus then uses a service discovery mechanism to find the target endpoints.   
 
 
 ### Rules
 We can define rules in Prometheus to aggregate metric values or to create alerts when condition is met (create an alert when CPU reaches 60%).
+
+Prometheus supports two types of rules which may be configured and then evaluated at regular intervals: recording rules and alerting rules. To include rules in Prometheus, create a file containing the necessary rule statements and have Prometheus load the file via the rule_files field in the Prometheus configuration. Rule files use YAML.
+
+The rule files can be reloaded at runtime by sending `SIGHUP` to the Prometheus process. The changes are only applied if all rule files are well-formatted.
+
+#### Syntax-checking rules
+To quickly check whether a rule file is syntactically correct without starting a Prometheus server, you can use Prometheus's `promtool` command-line utility tool:
+```typescript
+promtool check rules /path/to/example.rules.yml
+```
+
+#### Recording rules 
+Recording rules allow you to precompute frequently needed or computationally expensive expressions and save their result as a new set of time series. Querying the precomputed result will then often be much faster than executing the original expression every time it is needed. This is especially useful for dashboards, which need to query the same expression repeatedly every time they refresh.
+
+Recording and alerting rules exist in a rule group. Rules within a group are run sequentially at a regular interval, with the same evaluation time. The names of recording rules must be valid metric names. The names of alerting rules must be valid label values.
+
+The syntax of a rule file is:
+```yaml
+groups:
+  [ - <rule_group> ]
+```
+
+A simple example rules file would be:
+```yaml
+groups:
+  - name: example
+    rules:
+    - record: job:http_inprogress_requests:sum
+      expr: sum by (job) (http_inprogress_requests)
+```
+
+**<rule_group>**
+```yaml
+# The name of the group. Must be unique within a file.
+name: <string>
+
+# How often rules in the group are evaluated.
+[ interval: <duration> | default = global.evaluation_interval ]
+
+rules:
+  [ - <rule> ... ]
+```
+
+The syntax for recording rules is:
+```yaml
+# The name of the time series to output to. Must be a valid metric name.
+record: <string>
+
+# The PromQL expression to evaluate. Every evaluation cycle this is
+# evaluated at the current time, and the result recorded as a new set of
+# time series with the metric name as given by 'record'.
+expr: <string>
+
+# Labels to add or overwrite before storing the result.
+labels:
+  [ <labelname>: <labelvalue> ]
+```
+
+#### Alerting rules 
+Alerting rules allow you to define alert conditions based on Prometheus expression language expressions and to send notifications about firing alerts to an external service. Whenever the alert expression results in one or more vector elements at a given point in time, the alert counts as active for these elements' label sets.
+
+**Defining alerting rules**
+Alerting rules are configured in Prometheus in the same way as recording rules.
+
+An example rules file with an alert would be:
+```yaml
+groups:
+- name: example
+  rules:
+  - alert: HighRequestLatency
+    expr: job:request_latency_seconds:mean5m{job="myjob"} > 0.5
+    for: 10m
+    labels:
+      severity: page
+    annotations:
+      summary: High request latency
+```
+The optional for clause causes Prometheus to wait for a certain duration between first encountering a new expression output vector element and counting an alert as firing for this element. In this case, Prometheus will check that the alert continues to be active during each evaluation for 10 minutes before firing the alert. Elements that are active, but not firing yet, are in the pending state.
+
+The labels clause allows specifying a set of additional labels to be attached to the alert. Any existing conflicting labels will be overwritten. The label values can be templated.
+
+The annotations clause specifies a set of informational labels that can be used to store longer additional information such as alert descriptions or runbook links. The annotation values can be templated.
+
+**Templating**
+Label and annotation values can be templated using console templates. The `$labels` variable holds the label key/value pairs of an alert instance. The configured external labels can be accessed via the $externalLabels variable. The $value variable holds the evaluated value of an alert instance.
+
+```yaml
+# To insert a firing element's label values:
+{{ $labels.<labelname> }}
+# To insert the numeric expression value of the firing element:
+{{ $value }}
+```
+
+Examples:
+```yaml
+groups:
+- name: example
+  rules:
+
+  # Alert for any instance that is unreachable for >5 minutes.
+  - alert: InstanceDown
+    expr: up == 0
+    for: 5m
+    labels:
+      severity: page
+    annotations:
+      summary: "Instance {{ $labels.instance }} down"
+      description: "{{ $labels.instance }} of job {{ $labels.job }} has been down for more than 5 minutes."
+
+  # Alert for any instance that has a median request latency >1s.
+  - alert: APIHighRequestLatency
+    expr: api_http_request_latencies_second{quantile="0.5"} > 1
+    for: 10m
+    annotations:
+      summary: "High request latency on {{ $labels.instance }}"
+      description: "{{ $labels.instance }} has a median request latency above 1s (current value: {{ $value }}s)"
+```
+
+
 
 Below is a sample Prometheus.yaml
 ```yaml
